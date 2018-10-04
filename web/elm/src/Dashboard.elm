@@ -33,6 +33,7 @@ import Routes
 import Simple.Fuzzy exposing (filter, match, root)
 import Task
 import Time exposing (Time)
+import Window
 
 
 type alias Ports =
@@ -384,6 +385,7 @@ subscriptions model =
         , Mouse.clicks (\_ -> ShowFooter)
         , Keyboard.presses KeyPressed
         , Keyboard.downs KeyDowns
+        , Window.resizes (TopBarMsg << NewTopBar.ScreenResized)
         ]
 
 
