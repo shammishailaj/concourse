@@ -1,9 +1,10 @@
-package resource
+package v2
 
 import (
 	"context"
 
 	"github.com/concourse/concourse/atc"
+	res "github.com/concourse/concourse/atc/resource"
 	"github.com/concourse/concourse/atc/worker"
 )
 
@@ -13,28 +14,29 @@ type getRequest struct {
 	Version atc.Version `json:"version,omitempty"`
 }
 
-func (resource *resource) Get(
+func (r *resource) Get(
 	ctx context.Context,
 	volume worker.Volume,
-	ioConfig IOConfig,
+	ioConfig res.IOConfig,
 	source atc.Source,
 	params atc.Params,
 	version atc.Version,
-) (VersionedSource, error) {
-	var vr versionResult
+) (res.VersionedSource, error) {
+	var vr res.VersionResult
 
-	err := resource.runScript(
+	err := res.RunScript(
 		ctx,
 		"/opt/resource/in",
-		[]string{ResourcesDir("get")},
+		[]string{res.ResourcesDir("get")},
 		getRequest{source, params, version},
 		&vr,
 		ioConfig.Stderr,
 		true,
+		r.container,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return NewGetVersionedSource(volume, vr.Version, vr.Metadata), nil
+	return res.NewGetVersionedSource(volume, vr.Version, vr.Metadata), nil
 }

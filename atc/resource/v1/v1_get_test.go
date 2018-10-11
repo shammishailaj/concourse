@@ -1,4 +1,4 @@
-package resource_test
+package v1_test
 
 import (
 	"bytes"

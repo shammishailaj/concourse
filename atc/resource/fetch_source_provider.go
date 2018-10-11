@@ -7,6 +7,7 @@ import (
 	"github.com/concourse/concourse/atc"
 	"github.com/concourse/concourse/atc/creds"
 	"github.com/concourse/concourse/atc/db"
+	"github.com/concourse/concourse/atc/resource/source"
 	"github.com/concourse/concourse/atc/worker"
 )
 
@@ -35,8 +36,8 @@ type FetchSourceProvider interface {
 
 type FetchSource interface {
 	LockName() (string, error)
-	Find() (VersionedSource, bool, error)
-	Create(context.Context) (VersionedSource, error)
+	Find() (source.VersionedSource, bool, error)
+	Create(context.Context) (source.VersionedSource, error)
 }
 
 type fetchSourceProviderFactory struct {

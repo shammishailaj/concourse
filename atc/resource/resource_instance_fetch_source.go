@@ -7,6 +7,7 @@ import (
 	"github.com/concourse/concourse/atc"
 	"github.com/concourse/concourse/atc/creds"
 	"github.com/concourse/concourse/atc/db"
+	"github.com/concourse/concourse/atc/resource/source"
 	"github.com/concourse/concourse/atc/worker"
 )
 
@@ -53,7 +54,7 @@ func (s *resourceInstanceFetchSource) LockName() (string, error) {
 	return s.resourceInstance.LockName(s.worker.Name())
 }
 
-func (s *resourceInstanceFetchSource) Find() (VersionedSource, bool, error) {
+func (s *resourceInstanceFetchSource) Find() (source.VersionedSource, bool, error) {
 	sLog := s.logger.Session("find")
 
 	volume, found, err := s.resourceInstance.FindOn(s.logger, s.worker)
@@ -74,7 +75,7 @@ func (s *resourceInstanceFetchSource) Find() (VersionedSource, bool, error) {
 
 	s.logger.Debug("found-initialized-versioned-source", lager.Data{"version": s.resourceInstance.Version(), "metadata": metadata.ToATCMetadata()})
 
-	return NewGetVersionedSource(
+	return source.NewGetVersionedSource(
 		volume,
 		s.resourceInstance.Version(),
 		metadata.ToATCMetadata(),
@@ -83,7 +84,7 @@ func (s *resourceInstanceFetchSource) Find() (VersionedSource, bool, error) {
 
 // Create runs under the lock but we need to make sure volume does not exist
 // yet before creating it under the lock
-func (s *resourceInstanceFetchSource) Create(ctx context.Context) (VersionedSource, error) {
+func (s *resourceInstanceFetchSource) Create(ctx context.Context) (source.VersionedSource, error) {
 	sLog := s.logger.Session("create")
 
 	versionedSource, found, err := s.Find()
@@ -95,7 +96,7 @@ func (s *resourceInstanceFetchSource) Create(ctx context.Context) (VersionedSour
 		return versionedSource, nil
 	}
 
-	mountPath := ResourcesDir("get")
+	mountPath := source.ResourcesDir("get")
 
 	containerSpec := worker.ContainerSpec{
 		ImageSpec: worker.ImageSpec{
@@ -136,7 +137,7 @@ func (s *resourceInstanceFetchSource) Create(ctx context.Context) (VersionedSour
 	versionedSource, err = resource.Get(
 		ctx,
 		volume,
-		IOConfig{
+		source.IOConfig{
 			Stdout: s.imageFetchingDelegate.Stdout(),
 			Stderr: s.imageFetchingDelegate.Stderr(),
 		},

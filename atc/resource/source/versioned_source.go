@@ -1,8 +1,9 @@
-package resource
+package source
 
 import (
 	"io"
 	"path"
+	"path/filepath"
 
 	"code.cloudfoundry.org/garden"
 	"github.com/concourse/concourse/atc"
@@ -21,18 +22,26 @@ type VersionedSource interface {
 	Volume() worker.Volume
 }
 
-type versionResult struct {
+type VersionResult struct {
 	Version atc.Version `json:"version"`
 
 	Metadata []atc.MetadataField `json:"metadata,omitempty"`
 }
 
 type putVersionedSource struct {
-	versionResult versionResult
+	versionResult VersionResult
 
 	container garden.Container
 
 	resourceDir string
+}
+
+func NewPutVersionedSource(versionResult VersionResult, container garden.Container, resourceDir string) VersionedSource {
+	return &putVersionedSource{
+		versionResult: versionResult,
+		container:     container,
+		resourceDir:   resourceDir,
+	}
 }
 
 func (vs *putVersionedSource) Version() atc.Version {
@@ -66,7 +75,7 @@ func NewGetVersionedSource(volume worker.Volume, version atc.Version, metadata [
 		volume:      volume,
 		resourceDir: ResourcesDir("get"),
 
-		versionResult: versionResult{
+		versionResult: VersionResult{
 			Version:  version,
 			Metadata: metadata,
 		},
@@ -74,7 +83,7 @@ func NewGetVersionedSource(volume worker.Volume, version atc.Version, metadata [
 }
 
 type getVersionedSource struct {
-	versionResult versionResult
+	versionResult VersionResult
 
 	volume      worker.Volume
 	resourceDir string
@@ -106,4 +115,14 @@ func (vs *getVersionedSource) StreamIn(dst string, src io.Reader) error {
 
 func (vs *getVersionedSource) Volume() worker.Volume {
 	return vs.volume
+}
+
+type IOConfig struct {
+	Stdout io.Writer
+	Stderr io.Writer
+}
+
+// TODO: check if we need it
+func ResourcesDir(suffix string) string {
+	return filepath.Join("/tmp", "build", suffix)
 }

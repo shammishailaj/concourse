@@ -1,9 +1,10 @@
-package resource
+package v2
 
 import (
 	"context"
 
 	"github.com/concourse/concourse/atc"
+	res "github.com/concourse/concourse/atc/resource"
 )
 
 type putRequest struct {
@@ -11,20 +12,16 @@ type putRequest struct {
 	Params atc.Params `json:"params,omitempty"`
 }
 
-func (resource *resource) Put(
+func (r *resource) Put(
 	ctx context.Context,
-	ioConfig IOConfig,
+	ioConfig res.IOConfig,
 	source atc.Source,
 	params atc.Params,
-) (VersionedSource, error) {
-	resourceDir := ResourcesDir("put")
+) (res.VersionedSource, error) {
+	resourceDir := res.ResourcesDir("put")
 
-	vs := &putVersionedSource{
-		container:   resource.container,
-		resourceDir: resourceDir,
-	}
-
-	err := resource.runScript(
+	var versionResult res.VersionResult
+	err := res.RunScript(
 		ctx,
 		"/opt/resource/out",
 		[]string{resourceDir},
@@ -32,13 +29,14 @@ func (resource *resource) Put(
 			Params: params,
 			Source: source,
 		},
-		&vs.versionResult,
+		&versionResult,
 		ioConfig.Stderr,
 		true,
+		r.container,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return vs, nil
+	return res.NewPutVersionedSource(versionResult, r.container, resourceDir), nil
 }

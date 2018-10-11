@@ -11,6 +11,7 @@ import (
 	"github.com/concourse/concourse/atc"
 	"github.com/concourse/concourse/atc/creds"
 	"github.com/concourse/concourse/atc/db/lock"
+	"github.com/concourse/concourse/atc/resource/source"
 	"github.com/concourse/concourse/atc/worker"
 )
 
@@ -32,7 +33,7 @@ type Fetcher interface {
 		resourceInstance ResourceInstance,
 		metadata Metadata,
 		imageFetchingDelegate worker.ImageFetchingDelegate,
-	) (VersionedSource, error)
+	) (source.VersionedSource, error)
 }
 
 func NewFetcher(
@@ -63,7 +64,7 @@ func (f *fetcher) Fetch(
 	resourceInstance ResourceInstance,
 	metadata Metadata,
 	imageFetchingDelegate worker.ImageFetchingDelegate,
-) (VersionedSource, error) {
+) (source.VersionedSource, error) {
 	sourceProvider := f.fetchSourceProviderFactory.NewFetchSourceProvider(
 		logger,
 		session,
@@ -112,7 +113,7 @@ func (f *fetcher) fetchWithLock(
 	logger lager.Logger,
 	source FetchSource,
 	stdout io.Writer,
-) (VersionedSource, error) {
+) (source.VersionedSource, error) {
 	versionedSource, found, err := source.Find()
 	if err != nil {
 		return nil, err

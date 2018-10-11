@@ -6,6 +6,7 @@ import (
 	"code.cloudfoundry.org/lager"
 	"github.com/concourse/concourse/atc/creds"
 	"github.com/concourse/concourse/atc/db"
+	"github.com/concourse/concourse/atc/resource/v1"
 	"github.com/concourse/concourse/atc/worker"
 )
 
@@ -60,5 +61,19 @@ func (f *resourceFactory) NewResource(
 		return nil, err
 	}
 
-	return NewResourceForContainer(container), nil
+	// Run info script using the container
+	// _, _ = NewUnversionedResource(container).Info(ctx)
+
+	// If info script run correctly, set the resource to v2, if not check if error is script not found and if yes then set to v1
+	// if err != nil {
+
+	// 	return err
+	// }
+	// if err == ErrNotScript {
+	// 	resource = v1.NewResourceV1(container)
+	// } else if err != nil {
+	// 	resource = v2.NewResourceV2(container)
+	// }
+
+	return v1.NewResource(container), nil
 }
