@@ -45,6 +45,7 @@ require (
 	github.com/coreos/go-oidc v0.0.0-20170307191026-be73733bb8cc
 	github.com/cppforlife/go-patch v0.0.0-20171006213518-250da0e0e68c // indirect
 	github.com/cppforlife/go-semi-semantic v0.0.0-20160921010311-576b6af77ae4
+	github.com/ddadlani/voyager v0.0.0-20181012214021-5e3d4bb01ce2
 	github.com/denisenkom/go-mssqldb v0.0.0-20180901172138-1eb28afdf9b6 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
@@ -110,7 +111,7 @@ require (
 	github.com/krishicks/yaml-patch v0.0.10
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
-	github.com/lib/pq v0.0.0-20180523175426-90697d60dd84
+	github.com/lib/pq v1.0.0
 	github.com/mailru/easyjson v0.0.0-20180823135443-60711f1a8329 // indirect
 	github.com/mattn/go-colorable v0.0.9
 	github.com/mattn/go-isatty v0.0.3
@@ -154,7 +155,7 @@ require (
 	github.com/vito/houdini v0.0.0-20170630141751-8dda540e3245
 	github.com/vito/twentythousandtonnesofcrudeoil v0.0.0-20180305154709-3b21ad808fcb
 	golang.org/x/crypto v0.0.0-20181009213950-7c1a557ab941
-	golang.org/x/net v0.0.0-20181005035420-146acd28ed58 // indirect
+	golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1 // indirect
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
 	golang.org/x/sys v0.0.0-20181005133103-4497e2df6f9e // indirect
 	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2 // indirect
